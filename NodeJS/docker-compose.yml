@@ -1,0 +1,30 @@
+services:
+  lazyvim_node_js:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        GIT_TOKEN: ${GIT_TOKEN}
+        GIT_USER: ${GIT_USER:-eliBrank}
+        GIT_EMAIL: ${GIT_EMAIL}
+    container_name: lazyvim_node_js
+    entrypoint: ["sh", "-c", "sleep infinity"]
+    init: true
+    environment:
+      - DISPLAY
+      - GIT_TOKEN=${GIT_TOKEN:-}
+      - GIT_USER=${GIT_USER:-eliBrank}
+      - GIT_EMAIL=${GIT_EMAIL:-}
+    volumes:
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+      - type: bind
+        source: /tmp/.X11-unix
+        target: /tmp/.X11-unix
+    devices:
+      - /dev/dri
+    stdin_open: true
+    tty: true
+    ports:
+      - "5173:5173"  # default port for Vite
