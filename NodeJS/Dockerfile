@@ -19,7 +19,7 @@ RUN apt-get update && \
     apt-get install -y sudo curl git build-essential fontconfig \
     unzip locales xclip pkg-config libssl-dev libffi-dev ripgrep \
     python3.13-venv \
-    fzf fd-find \
+    fzf fd-find wl-clipboard \
     libxml2-dev libxslt1-dev zlib1g-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*

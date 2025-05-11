@@ -11,17 +11,16 @@ services:
     entrypoint: ["sh", "-c", "sleep infinity"]
     init: true
     environment:
-      - DISPLAY
+      - DISPLAY=${DISPLAY:-:0} # fallback to :0 if unset
+      - WAYLAND_DISPLAY=${WAYLAND_DISPLAY}
+      - XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR}
       - GIT_TOKEN=${GIT_TOKEN:-}
       - GIT_USER=${GIT_USER:-eliBrank}
       - GIT_EMAIL=${GIT_EMAIL:-}
     volumes:
-      - type: bind
-        source: /var/run/docker.sock
-        target: /var/run/docker.sock
-      - type: bind
-        source: /tmp/.X11-unix
-        target: /tmp/.X11-unix
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}:${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}:ro
     devices:
       - /dev/dri
     stdin_open: true
