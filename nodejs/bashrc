@@ -1,0 +1,29 @@
+PS1="\[\e[38;5;182m\]root@SANDBOX:\[\e[38;5;181m\]\w # \[\033[0m\]"
+alias gcc='gcc -Wall -Werror -Wextra -pedantic -std=gnu89'
+alias ls='ls --color=auto'
+alias la='ls -a'
+alias ll='ls -l'
+
+# mysql script runner
+function runsql() {
+    local file="$1"
+    local database="$2"
+
+    if [[ -z "$file" ]]; then
+        # No arguments, launch the MySQL prompt
+        mysql -h mysql -u root -ppw
+    elif [[ -z "$database" ]]; then
+        # One argument, execute the SQL file
+        mysql -h mysql -u root -ppw < "$file"
+    else
+        # Two arguments, execute the SQL file against the specified database
+        mysql -h mysql -u root -ppw "$database" < "$file"
+    fi
+}
+
+# Enable tab completion for runsql function
+complete -o default -o nospace -F _runsql runsql
+
+function _runsql() {
+    COMPREPLY=($(compgen -f -- "${COMP_WORDS[COMP_CWORD]}"))
+}

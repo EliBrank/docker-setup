@@ -1,0 +1,9 @@
+set fo=croql
+set number
+set cindent
+syntax on
+" esc in insert/visual mode
+inoremap kj <esc>
+vnoremap kj <esc>
+" Remove trailing whitespace
+autocmd BufWritePre * :%s/\s\+$//e

@@ -20,10 +20,15 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - ${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}:${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}:ro
+      - ${XDG_RUNTIME_DIR}:${XDG_RUNTIME_DIR}
+      # wayland variable set to 'none' by default (applies to X11 machines)
+      # this will produce harmless error
+      - ${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY:-none}:${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY:-none}:ro
     devices:
       - /dev/dri
     stdin_open: true
     tty: true
     ports:
-      - "5173:5173"  # default port for Vite
+      - "5173:5173" # Vite
+      - "3000:3000" # NextJS
+      - "8081:8081" # Expo

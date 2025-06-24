@@ -7,6 +7,7 @@ ENV SHELL /bin/bash
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
+ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
@@ -27,6 +28,10 @@ RUN apt-get update && \
 # Generate locale
 RUN locale-gen en_US.UTF-8
 
+# Install .NET SDK (includes C# compiler)
+RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel LTS --install-dir /usr/share/dotnet && \
+    ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
+
 # Install the latest Neovim from GitHub releases
 RUN NEOVIM_VERSION=$(curl -s https://api.github.com/repos/neovim/neovim/releases/latest | grep -Po '"tag_name": "\K.*?(?=")') && \
     curl -LO https://github.com/neovim/neovim/releases/download/${NEOVIM_VERSION}/nvim-linux-x86_64.tar.gz && \
@@ -45,25 +50,8 @@ RUN LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygi
     install lazygit /usr/local/bin && \
     rm -rf lazygit lazygit.tar.gz
 
-# Install fd
-# RUN FD_VERSION=$(curl -s "https://api.github.com/repos/sharkdp/fd/releases/latest" | grep -Po '"tag_name": "\K[^"]*') && \
-#     curl -Lo fd.tar.gz "https://github.com/sharkdp/fd/releases/download/${FD_VERSION}/fd-${FD_VERSION}-x86_64-unknown-linux-gnu.tar.gz" && \
-#     tar xf fd.tar.gz && \
-#     install fd-${FD_VERSION}-x86_64-unknown-linux-gnu/fd /usr/local/bin && \
-#     rm -rf fd.tar.gz fd-${FD_VERSION}-x86_64-unknown-linux-gnu
-
-# Install fzf
-# RUN FZF_VERSION=$(curl -s "https://api.github.com/repos/junegunn/fzf/releases/latest" | grep -Po '"tag_name": "\K[^"]*') && \
-#     curl -Lo fzf.tar.gz "https://github.com/junegunn/fzf/releases/download/${FZF_VERSION}/fzf-${FZF_VERSION}-linux_amd64.tar.gz" && \
-#     tar xf fzf.tar.gz && \
-#     install fzf /usr/local/bin && \
-#     rm -rf fzf fzf.tar.gz && \
-#     # Also install fzf scripts and completion
-#     git clone --depth 1 --branch "${FZF_VERSION}" https://github.com/junegunn/fzf.git ~/.fzf && \
-#     ~/.fzf/install --all
-
 # Install Node.js
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     apt-get install -y nodejs
 
 # Install FiraCode Nerd Font
